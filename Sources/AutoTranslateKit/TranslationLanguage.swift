@@ -8,8 +8,13 @@ public struct TranslationLanguage: RawRepresentable, Codable, Hashable, Sendable
         if rawValue == "system" {
             self.rawValue = rawValue
         } else {
-            self.rawValue = Locale.Language(identifier: rawValue).languageCode?.identifier
-                ?? rawValue
+            let language = Locale.Language(identifier: rawValue)
+            if language.languageCode?.identifier == "zh",
+               let script = language.script?.identifier {
+                self.rawValue = "zh-\(script)"
+            } else {
+                self.rawValue = language.languageCode?.identifier ?? rawValue
+            }
         }
     }
 
@@ -50,7 +55,8 @@ public struct TranslationLanguage: RawRepresentable, Codable, Hashable, Sendable
     /// Localized, human-readable language name.
     public func displayName(in displayLocale: Locale = .autoupdatingCurrent) -> String {
         let language = resolved
-        return displayLocale.localizedString(forLanguageCode: language.rawValue)
+        return displayLocale.localizedString(forIdentifier: language.rawValue)
+            ?? displayLocale.localizedString(forLanguageCode: language.rawValue)
             ?? language.rawValue.uppercased()
     }
 

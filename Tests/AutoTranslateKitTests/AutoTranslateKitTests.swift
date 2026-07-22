@@ -10,6 +10,10 @@ struct AutoTranslateKitTests {
         #expect(TranslationLanguage.english.locale.identifier == "en")
         #expect(TranslationLanguage.french.locale.identifier == "fr")
         #expect(TranslationLanguage(identifier: "es-MX") == .spanish)
+        #expect(
+            TranslationLanguage(identifier: "zh-Hans")
+                != TranslationLanguage(identifier: "zh-Hant")
+        )
     }
 
     @Test
